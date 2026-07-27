@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.o
+*.so
+data/
+figures/
+demo/dump/
+demo/nccl-tests/
+sup_data/
