@@ -1,0 +1,223 @@
+% IISWC 2026 Artifact Appendix — NIXT
+% Based on the cTuning AE template (V20240722, CC BY 4.0).
+% NOTE: for the camera-ready, copy everything between the
+% "APPENDIX BEGIN/END" markers into the main paper source and
+% remove this standalone preamble.
+
+\documentclass[10pt,twocolumn]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{hyperref}
+\usepackage{xurl}
+\pagestyle{plain}
+
+\begin{document}
+
+% =============== APPENDIX BEGIN ===============
+\appendix
+\section{Artifact Appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Abstract}
+
+This artifact contains the complete source code of NIXT (NCCL
+Inspector eXporter Tool), the observability pipeline used in the
+paper: (1)~the \textbf{Inspector} NCCL profiler plugin (C++), which
+attaches to any NCCL-based job and emits per-rank, per-collective
+JSON dumps; (2)~the \textbf{exporter} (Python), which parses the
+dumps into parquet tables and summary reports; and (3)~the
+\textbf{analysis} scripts (Python) that generated every experiment
+figure in the paper.
+
+The telemetry analyzed in the paper was collected from large-scale
+production LLM training runs (up to 2048 H100 GPUs) whose data is
+confidential and cannot be redistributed. The artifact is therefore
+\emph{code only}: we claim the \textbf{Available} and
+\textbf{Reviewed} badges, not \textbf{Reproducible}. To let
+evaluators verify functionality end-to-end, the artifact includes a
+single-script demo that runs the full pipeline (plugin
+$\rightarrow$ dumps $\rightarrow$ parquet $\rightarrow$ summaries)
+on a small GPU node using \texttt{nccl-tests} as the workload, plus
+reference copies of all paper figures in \texttt{expected\_output/}
+and a figure-to-script map in \texttt{docs/figure\_map.md}.
+
+\subsection{Artifact check-list (meta-information)}
+
+{\small
+\begin{itemize}
+  \item {\bf Program: } NCCL Inspector profiler plugin (C++);
+        exporter and analysis scripts (Python);
+        \texttt{nccl-tests} (fetched automatically by the demo).
+  \item {\bf Compilation: } GNU make, \texttt{g++} (C++14/17),
+        CUDA toolkit $\geq$ 12.x.
+  \item {\bf Binary: } \texttt{libnccl-profiler-inspector.so},
+        built from source.
+  \item {\bf Data set: } none distributed (production telemetry is
+        confidential); the demo generates its own data via
+        \texttt{nccl-tests}.
+  \item {\bf Run-time environment: } Linux x86\_64; CUDA $\geq$ 12.x;
+        NCCL $\geq$ 2.28 (2.28--2.30 tested); Python $\geq$ 3.10.
+  \item {\bf Hardware: } one node with $\geq$ 2 NVIDIA GPUs
+        (developed on A100/H100; no architecture-specific code).
+  \item {\bf Execution: } single script \texttt{demo/run\_demo.sh}.
+  \item {\bf Metrics: } per-collective bus bandwidth, execution
+        time, message sizes, and transferred bytes.
+  \item {\bf Output: } per-rank \texttt{*.log.gz} JSON dumps;
+        parquet tables; summary CSVs and plots; reference paper
+        figures in \texttt{expected\_output/}.
+  \item {\bf Experiments: } end-to-end functional demo; paper
+        analysis scripts provided for inspection and reuse.
+  \item {\bf How much disk space required (approximately)?: }
+        $\sim$2 GB (dominated by the \texttt{nccl-tests} build).
+  \item {\bf How much time is needed to prepare workflow
+        (approximately)?: } $\sim$15 minutes.
+  \item {\bf How much time is needed to complete experiments
+        (approximately)?: } $\sim$15 minutes.
+  \item {\bf Publicly available?: } Yes (GitHub; archived on
+        Zenodo).
+  \item {\bf Code licenses (if publicly available)?: }
+        BSD-3-Clause (Inspector plugin vendored from NVIDIA's NCCL
+        \texttt{ext-profiler} example, NVIDIA copyright).
+  \item {\bf Archived (provide DOI)?: }
+        \texttt{10.5281/zenodo.XXXXXXX} (TODO).
+\end{itemize}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Description}
+
+\subsubsection{How to access}
+
+The artifact is available at
+\url{https://github.com/ziyang-arch/nixt-analysis} % TODO: final URL
+and archived at \texttt{10.5281/zenodo.XXXXXXX}. % TODO: DOI
+Repository layout:
+
+{\small
+\begin{itemize}
+  \item \texttt{inspector/} --- NCCL Inspector profiler plugin
+        (C++, standalone Makefile).
+  \item \texttt{exporter/} ---
+        \texttt{perf\_summary\_exporter.py}: parses dumps into
+        parquet + summary reports/plots.
+  \item \texttt{analysis/} --- paper figure scripts.
+  \item \texttt{demo/} --- end-to-end functional demo (2--8 GPUs).
+  \item \texttt{expected\_output/} --- experiment figures exactly
+        as they appear in the paper.
+  \item \texttt{docs/figure\_map.md} --- paper figure
+        $\leftrightarrow$ script $\leftrightarrow$ input mapping.
+\end{itemize}
+}
+
+\subsubsection{Hardware dependencies}
+
+A Linux x86\_64 node with at least 2 NVIDIA GPUs. Any recent
+architecture works; the demo was developed against A100/H100.
+
+\subsubsection{Software dependencies}
+
+CUDA $\geq$ 12.x; NCCL $\geq$ 2.28 (profiler plugin API; 2.28--2.30
+tested); Python $\geq$ 3.10 with \texttt{pandas}, \texttt{tqdm},
+\texttt{duckdb}, \texttt{matplotlib}, \texttt{pyarrow},
+\texttt{numpy} (\texttt{pip install -r exporter/requirements.txt});
+\texttt{nccl-tests} (cloned and built automatically by the demo).
+
+\subsubsection{Data sets}
+
+The paper's telemetry comes from confidential production training
+runs and is not redistributable. The demo generates its own
+Inspector dumps from \texttt{nccl-tests} collectives.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Installation}
+
+{\small
+\begin{verbatim}
+pip install -r exporter/requirements.txt
+make -C inspector   # set CUDA_HOME if CUDA is
+                    # not at /usr/local/cuda
+\end{verbatim}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Experiment workflow}
+
+The pipeline is: Inspector plugin (attached to a NCCL job via
+\texttt{NCCL\_PROFILER\_PLUGIN}) $\rightarrow$ per-rank
+\texttt{*.log.gz} JSON dumps $\rightarrow$ exporter $\rightarrow$
+parquet + summaries $\rightarrow$ analysis scripts $\rightarrow$
+figures. The demo automates all stages:
+
+{\small
+\begin{verbatim}
+NGPUS=2 ./demo/run_demo.sh
+\end{verbatim}
+}
+
+It (1)~builds the plugin, (2)~clones/builds \texttt{nccl-tests} if
+needed, (3)~runs \texttt{all\_reduce\_perf} and
+\texttt{all\_gather\_perf} (1\,KB--256\,MB) with the plugin
+attached, and (4)~exports the dumps to parquet and summary
+reports.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Evaluation and expected results}
+
+After the demo completes ($\sim$15 min total), verify:
+
+{\small
+\begin{itemize}
+  \item \texttt{demo/dump/<timestamp>/} contains per-rank
+        \texttt{*.log.gz} Inspector dumps (the script fails loudly
+        if none are produced);
+  \item \texttt{data/demo-analysis/parquet\_files/} contains one
+        parquet file per rank;
+  \item \texttt{data/demo-analysis/} contains summary CSVs and
+        plots with plausible bus-bandwidth and message-size
+        statistics for the two collectives.
+\end{itemize}
+}
+
+This validates the full plugin $\rightarrow$ exporter path used for
+every result in the paper. The scripts in \texttt{analysis/}
+generated all experiment figures; \texttt{docs/figure\_map.md} maps
+each paper figure to its script, and \texttt{expected\_output/}
+contains the exact figures from the camera-ready paper. Because the
+underlying telemetry is confidential, re-generating those figures
+is out of scope for this evaluation (we do not claim the
+\textbf{Reproducible} badge).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Experiment customization}
+
+The plugin attaches to any NCCL/PyTorch job:
+
+{\small
+\begin{verbatim}
+export NCCL_PROFILER_PLUGIN=\
+  /path/to/libnccl-profiler-inspector.so
+export NCCL_INSPECTOR_ENABLE=1
+export NCCL_INSPECTOR_DUMP_DIR=/path/to/dumps
+<launch your job as usual>
+python3 exporter/perf_summary_exporter.py \
+  --input_dir /path/to/dumps
+\end{verbatim}
+}
+
+All analysis scripts resolve inputs/outputs relative to
+\texttt{NIXT\_ROOT} (defaults to the repository root), so they can
+be pointed at telemetry collected from the evaluator's own
+workloads. \texttt{inspector/README.md} documents all knobs
+(verbose event traces, Prometheus export, dump intervals).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Methodology}
+
+Submission, reviewing and badging methodology:
+
+\begin{itemize}
+  \item \url{https://www.acm.org/publications/policies/artifact-review-and-badging-current}
+  \item \url{https://cTuning.org/ae}
+\end{itemize}
+% =============== APPENDIX END ===============
+
+\end{document}
