@@ -2,6 +2,8 @@
 
 Artifact for the IISWC 2026 paper **"NIXT: A NCCL Inspector Exporter Tool for Observability of Collective Communication in Large Model Training"**.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21755872.svg)](https://doi.org/10.5281/zenodo.21755872)
+
 NIXT (NCCL Inspector eXporter Tool) is an observability pipeline for NCCL collective communication:
 
 ```

@@ -2,6 +2,7 @@ cff-version: 1.2.0
 message: "If you use this artifact, please cite the paper below."
 title: "nixt-analysis: artifact for NIXT (IISWC 2026)"
 repository-code: "https://github.com/ziyang-arch/nixt-analysis"
+doi: 10.5281/zenodo.21755872
 license: BSD-3-Clause
 authors:
   - family-names: Jia
