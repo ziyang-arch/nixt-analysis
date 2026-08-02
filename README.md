@@ -1,6 +1,6 @@
-# NIXT Artifact — Demystifying Collective Communication (IISWC 2026)
+# NIXT Artifact (IISWC 2026)
 
-Artifact for the IISWC 2026 paper **"Demystifying Collective Communication: Observability of NCCL Collectives in Large-Scale LLM Training with NIXT"**.
+Artifact for the IISWC 2026 paper **"NIXT: A NCCL Inspector Exporter Tool for Observability of Collective Communication in Large Model Training"**.
 
 NIXT (NCCL Inspector eXporter Tool) is an observability pipeline for NCCL collective communication:
 
