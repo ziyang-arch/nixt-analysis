@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: "If you use this artifact, please cite the paper below."
+title: "nixt-analysis: artifact for NIXT (IISWC 2026)"
+repository-code: "https://github.com/ziyang-arch/nixt-analysis"
+license: BSD-3-Clause
+authors:
+  - family-names: Jia
+    given-names: Ziyang
+    affiliation: "University of California, Riverside"
+  - family-names: Das
+    given-names: Sirshak
+    affiliation: NVIDIA
+  - family-names: Sewall
+    given-names: Jason
+    affiliation: NVIDIA
+  - family-names: Bhuyan
+    given-names: Laxmi
+    affiliation: "University of California, Riverside"
+  - family-names: Shamis
+    given-names: Pasha
+    affiliation: NVIDIA
+  - family-names: Wong
+    given-names: Daniel
+    affiliation: "University of California, Riverside"
+preferred-citation:
+  type: conference-paper
+  title: "NIXT: A NCCL Inspector Exporter Tool for Observability of Collective Communication in Large Model Training"
+  authors:
+    - family-names: Jia
+      given-names: Ziyang
+    - family-names: Das
+      given-names: Sirshak
+    - family-names: Sewall
+      given-names: Jason
+    - family-names: Bhuyan
+      given-names: Laxmi
+    - family-names: Shamis
+      given-names: Pasha
+    - family-names: Wong
+      given-names: Daniel
+  collection-title: "2026 IEEE International Symposium on Workload Characterization (IISWC)"
+  year: 2026
+  publisher:
+    name: IEEE

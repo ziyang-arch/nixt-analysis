@@ -1,0 +1,14 @@
+# logs view: 37,530,721 rows across 1 run(s)
+# threads: 64
+# duckdb: 1.4.3
+
+query                           runs   cold_s  warm_min_s  warm_med_s        rows
+---------------------------------------------------------------------------------
+a_summary_histogram                5    0.232       0.225       0.228           4
+b_temporal_correlation             5    3.570       3.580       3.612     2955666
+c_spatial_correlation              5    0.520       0.296       0.296          32
+d_resource_correlation             5    0.248       0.245       0.248           9
+e_other_correlation                5    0.266       0.244       0.278           1
+
+# sum(warm_min) across all 5 primitives: 4.589 s
+# max(warm_min) single primitive       : 3.580 s
