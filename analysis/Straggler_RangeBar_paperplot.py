@@ -267,7 +267,7 @@ def main() -> None:
         con,
         out_name="straggler_pertimebin_rangebar_15b_mixedAG24MB",
         entity_expr="FLOOR((dump_timestamp_us - t0_us) / 1e6 / 5) * 5",
-        xlabel="Wall-clock time since window start (s, 5-s bins)",
+        xlabel="Wall-clock time (s, 5-s bins)",
         extra_with="t0",
         x_use_value=True,
         y_share=True,
